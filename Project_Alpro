@@ -1,7 +1,154 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <fstream>
 using namespace std;
 
-int main() {
+void menu();
+struct Bimbel {
+    int id;
+    string nama;
+    string paket;
+    int usia;
+    string telepon;
+    Bimbel* next;
+};
 
+Bimbel* head = nullptr;
+
+bool login() {
+    string user, pass;
+    const string USERNAME = "admin";
+    const string PASSWORD = "123";
+
+    cout << "==============================\n";
+    cout << "|         LOGIN ADMIN        |\n";
+    cout << "==============================\n";
+    cout << "Username : ";
+    getline(cin, user);
+    cout << "Password : ";
+    getline(cin, pass);
+
+    if (user == USERNAME && pass == PASSWORD) {
+        cout << "Login berhasil!\n";
+        return true;
+    } else {
+        cout << "Login gagal! Username atau password salah.\n";
+        return false;
+    }
+}
+
+void simpanKeFile() {
+    ofstream file("murid.txt");
+    Bimbel* temp = head;
+    while (temp) {
+        file << temp->id << ";"
+             << temp->nama << ";"
+             << temp->paket << ";"
+             << temp->usia << ";"
+             << temp->telepon << "\n";
+        temp = temp->next;
+    }
+    file.close();
+}
+
+void bacaDariFile() {
+    ifstream file("murid.txt");
+    if (!file) return;
+
+    int id, usia;
+    string nama, paket, telepon;
+
+    while (file >> id) {
+        file.ignore(); 
+        getline(file, nama, ';');
+        getline(file, paket, ';');
+        file >> usia;
+        file.ignore(); 
+        getline(file, telepon);
+
+        Bimbel* baru = new Bimbel{ id, nama, paket, usia, telepon, head };
+        head = baru;
+    }
+
+    file.close();
+}
+
+void tambahMurid() {
+    int n;
+    cout << "\n=========================================\n";
+    cout << "|         INPUT Data Murid             |\n";
+    cout << "========================================\n";
+    cout << "\nMasukkan jumlah murid yang ingin ditambahkan: ";
+    cin >> n;
+    cin.ignore();
+
+    for (int i = 0; i < n; ++i) {
+        Bimbel* baru = new Bimbel();
+        cout << "\nData ke-" << i + 1 << endl;
+        cout << "ID         : "; cin >> baru->id; cin.ignore();
+        cout << "Nama Murid : "; getline(cin, baru->nama);
+        cout << "Paket      : "; getline(cin, baru->paket);
+        cout << "Usia       : "; cin >> baru->usia;
+        cout << "Telepon    : "; cin >> baru->telepon;
+        cin.ignore();
+        baru->next = head;
+        head = baru;
+    }
+
+    simpanKeFile();
+    cout << "Data berhasil disimpan!\n";
+    char kembali;
+    cout << "Kembali ke Menu Utama (y/n)? ";
+    cin >> kembali;
+
+    if (toupper(kembali) == 'Y') {
+        menu();
+    }
+}
+
+void cetakTabel(Bimbel* arr[], int size, string judul) {
+    cout << "\n============================= " << judul << " =============================\n";
+    cout << "========================================================================\n";
+    cout << "|    ID    |    Nama Murid    |   Paket  |    Usia    | No Telepon |\n";
+    cout << "========================================================================\n";
+    for (int i = 0; i < size; ++i) {
+        cout << "| " << setw(8) << arr[i]->id
+             << " | " << setw(16) << arr[i]->nama
+             << " | " << setw(8) << arr[i]->paket
+             << " | " << setw(10) << arr[i]->usia
+             << " | " << setw(10) << arr[i]->telepon << " |\n";
+    }
+    cout << "========================================================================\n";
+}
+
+void tampilMurid() {
+    if (!head) {
+        cout << "Data kosong!\n";
+        return;
+    }
+
+    cout << "\n========================= DATA MURID =========================\n";
+    cout << "=======================================================================\n";
+    cout << "|    ID    |    Nama Murid    |   Paket  |    Usia    | No Telepon |\n";
+    cout << "=======================================================================\n";
+
+    Bimbel* temp = head;
+    while (temp) {
+        cout << "| " << setw(8) << temp->id
+             << " | " << setw(16) << temp->nama
+             << " | " << setw(8) << temp->paket
+             << " | " << setw(10) << temp->usia
+             << " | " << setw(10) << temp->telepon << " |\n";
+        temp = temp->next;
+    }
+
+    cout << "=======================================================================\n";
+    char kembali;
+    cout << "Kembali ke Menu Utama (y/n)? ";
+    cin >> kembali;
+
+    if (toupper(kembali) == 'Y') {
+        menu();
+    }
 }
