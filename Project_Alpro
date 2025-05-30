@@ -3,7 +3,6 @@
 #include <string>
 #include <fstream>
 using namespace std;
-
 void menu();
 struct Bimbel {
     int id;
@@ -13,9 +12,7 @@ struct Bimbel {
     string telepon;
     Bimbel* next;
 };
-
 Bimbel* head = nullptr;
-
 bool login() {
     string user, pass;
     const string USERNAME = "admin";
@@ -37,7 +34,6 @@ bool login() {
         return false;
     }
 }
-
 void simpanKeFile() {
     ofstream file("murid.txt");
     Bimbel* temp = head;
@@ -51,7 +47,6 @@ void simpanKeFile() {
     }
     file.close();
 }
-
 void bacaDariFile() {
     ifstream file("murid.txt");
     if (!file) return;
@@ -70,10 +65,8 @@ void bacaDariFile() {
         Bimbel* baru = new Bimbel{ id, nama, paket, usia, telepon, head };
         head = baru;
     }
-
     file.close();
 }
-
 void tambahMurid() {
     int n;
     cout << "\n=========================================\n";
@@ -142,7 +135,6 @@ void tampilMurid() {
              << " | " << setw(10) << temp->telepon << " |\n";
         temp = temp->next;
     }
-
     cout << "=======================================================================\n";
     char kembali;
     cout << "Kembali ke Menu Utama (y/n)? ";
