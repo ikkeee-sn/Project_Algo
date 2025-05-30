@@ -144,3 +144,199 @@ void tampilMurid() {
         menu();
     }
 }
+void urutkanData() {
+    if (!head) {
+        cout << "Data kosong!\n";
+        return;
+    }
+
+    int count = 0;
+    Bimbel* temp = head;
+    while (temp) {
+        count++;
+        temp = temp->next;
+    }
+
+    Bimbel** arr = new Bimbel*[count];
+    temp = head;
+    for (int i = 0; i < count; ++i) {
+        arr[i] = temp;
+        temp = temp->next;
+    }
+
+    int pilihan;
+    cout << "\n========================================\n";
+    cout << "|     Urutkan Data Berdasarkan ID      |\n";
+    cout << "========================================\n";
+    cout << "| 1. Dari ID Terkecil ke Terbesar      |\n";
+    cout << "| 2. Dari ID Terbesar ke Terkecil      |\n";
+    cout << "========================================\n";
+    cout << "Pilih opsi: ";
+    cin >> pilihan;
+
+    for (int i = 0; i < count - 1; ++i) {
+        for (int j = 0; j < count - i - 1; ++j) {
+            bool kondisi = (pilihan == 1) ? arr[j]->id > arr[j + 1]->id
+                                          : arr[j]->id < arr[j + 1]->id;
+            if (kondisi) {
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+
+    string judul = (pilihan == 1) ? "ID Terkecil ke Terbesar" : "ID Terbesar ke Terkecil";
+    cetakTabel(arr, count, judul);
+    delete[] arr;
+    char kembali;
+    cout << "Kembali ke Menu Utama (y/n)? ";
+    cin >> kembali;
+
+    if (toupper(kembali) == 'Y') {
+        menu();
+    }
+}
+
+void cariMurid() {
+    if (!head) {
+        cout << "Data kosong!\n";
+        return;
+    }
+
+    string namaCari;
+    cout << "Masukkan nama murid yang dicari: ";
+    getline(cin, namaCari);
+
+    Bimbel* temp = head;
+    bool ditemukan = false;
+    cout << "\nHasil Pencarian:\n";
+    cout << "=====================================================================\n";
+    cout << "|    ID     |    Nama    |   Paket   | Usia |     Telepon     |\n";
+    cout << "=====================================================================\n";
+
+while (temp) {
+    if (temp->nama == namaCari) {
+        cout << "| " << setw(9) << temp->id
+             << " | " << setw(10) << temp->nama
+             << " | " << setw(9) << temp->paket
+             << " | " << setw(4) << temp->usia
+             << " | " << setw(15) << temp->telepon << " |\n";
+        ditemukan = true;
+    }
+    temp = temp->next;
+}
+
+    if (!ditemukan) {
+        cout << "| Data murid tidak ditemukan.                           |\n";
+    }
+    cout << "=====================================================================\n";
+    char kembali;
+    cout << "Kembali ke Menu Utama (y/n)? ";
+    cin >> kembali;
+
+    if (toupper(kembali) == 'Y') {
+        menu();
+    }
+}
+
+void hapusMurid() {
+    if (!head) {
+        cout << "Data kosong!\n";
+        return;
+    }
+
+    cout << "\n==============================  HAPUS DATA  ===============================\n";
+    cout << "========================================================================\n";
+    cout << "|    ID    |    Nama Murid    |   Paket  |    Usia    | No Telepon   |\n";
+    cout << "========================================================================\n";
+
+    Bimbel* temp = head;
+    while (temp) {
+        cout << "| " << setw(8) << temp->id
+             << " | " << setw(16) << temp->nama
+             << " | " << setw(8) << temp->paket
+             << " | " << setw(10) << temp->usia
+             << " | " << setw(10) << temp->telepon << " |\n";
+        temp = temp->next;
+    }
+
+    cout << "========================================================================\n";
+    cout << "\nMasukkan nama murid yang ingin dihapus: ";
+    string nama;
+    getline(cin, nama);
+
+    temp = head;
+    Bimbel* prev = nullptr;
+
+    while (temp) {
+        if (temp->nama == nama) {
+            if (!prev) head = temp->next;
+            else prev->next = temp->next;
+            delete temp;
+            simpanKeFile();
+            cout << "\nData berhasil dihapus.\n";
+            return;
+        }
+        prev = temp;
+        temp = temp->next;
+    }
+
+    cout << "\nData tidak ditemukan.\n";
+    char kembali;
+    cout << "Kembali ke Menu Utama (y/n)? ";
+    cin >> kembali;
+
+    if (toupper(kembali) == 'Y') {
+        menu();
+    }
+}
+
+void menu() {
+    int pilih;
+    do {
+        cout << "\n========================================\n";
+        cout << "|    SISTEM MANAJEMEN TEMPAT BIMBEL    |\n";
+        cout << "========================================\n";
+        cout << "| 1. Tambahkan Data Murid              |\n";
+        cout << "| 2. Tampilkan Data Murid              |\n";
+        cout << "| 3. Cari Nama Murid                   |\n";
+        cout << "| 4. Hapus Data Murid                  |\n";
+        cout << "| 5. Urutkan Data Berdasarkan ID       |\n";
+        cout << "| 0. Keluar                            |\n";
+        cout << "========================================\n";
+        cout << "Pilih menu: ";
+        cin >> pilih;
+        cin.ignore();
+
+        switch (pilih) {
+            case 1:
+                tambahMurid();
+                break;
+            case 2:
+                tampilMurid();
+                break;
+            case 3:
+                cariMurid();
+                break;
+            case 4:
+                hapusMurid();
+                break;
+            case 5:
+                urutkanData();
+                break;
+            case 0:
+                cout << "Keluar dari program.\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid!\n";
+        }
+    } while (pilih != 0);
+}
+
+int main() {
+    while (!login()) {
+        cout << "Silakan coba login kembali.\n\n";
+    }
+    bacaDariFile();
+    menu();
+    return 0;
+}
