@@ -325,7 +325,7 @@ void menu() {
                 break;
             case 0:
                 cout << "Keluar dari program.\n";
-                break;
+                exit(0);
             default:
                 cout << "Pilihan tidak valid!\n";
         }
